@@ -1,70 +1,61 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>Menu circulaire – fenêtres centrées (slide-in)</title>
+<meta charset="UTF-8">
+<title>Menu circulaire – pages plein écran (slide-in)</title>
 <style>
-  :root{
-    --diametre: 520px;        /* diamètre du grand cercle */
-    --rayon: 230px;           /* rayon de l’orbite */
-    --diametre-noeud: 120px;  /* taille des cercles */
+  :root {
+    --diametre: 520px;
+    --rayon: 230px;
+    --diametre-noeud: 120px;
   }
-  *{ box-sizing: border-box; }
-  html, body{ height:100%; margin:0; }
-  body{
-    background:#0f0f0f;
-    color:#fff;
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #0f0f0f;
+    color: #fff;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   }
-  a{ color:inherit; text-decoration:none; }
-  /* ====== Wrapper global (référence des fenêtres) ====== */
-  .app{
-    position: relative;      /* .section absolute se positionnera par rapport à .app */
-    min-height: 100vh;
-    padding: 24px 0 80px;
-    overflow: hidden;        /* évite qu'une anim déborde visuellement */
-  }
-  /* ====== Menu circulaire ====== */
-  .circle-container{
+  a { color: inherit; text-decoration: none; }
+  /* ===== Menu circulaire ===== */
+  .circle-container {
     position: relative;
     width: var(--diametre);
     height: var(--diametre);
-    margin: 40px auto 16px;
+    margin: 80px auto;
     list-style: none;
     padding: 0;
   }
-  .circle-container > li{ position:absolute; top:50%; left:50%; }
+  .circle-container > li { position: absolute; top: 50%; left: 50%; }
   .node{
     display:flex; align-items:center; justify-content:center;
     width:var(--diametre-noeud); height:var(--diametre-noeud);
     transform: translate(-50%, -50%);
-    border-radius:50%;
-    background:#9a2243;
-    border:2px solid #000;
-    text-align:center;
-    padding:10px;
-    line-height:1.2;
-    color:#fff;
+    border-radius:50%; background:#9a2243; border:2px solid #000;
+    text-align:center; padding:10px; line-height:1.2; color:#fff;
     box-shadow:0 0 12px rgba(255,255,255,.25);
     transition: transform .35s ease, background .35s ease, box-shadow .35s ease;
   }
   .node:hover, .node:focus-visible{
     background:#a82a4d;
     transform: translate(-50%, -50%) scale(1.25);
+    animation: glowPulse 1.2s ease-in-out infinite;
     outline: none;
   }
-  /* Placement des 6 éléments à 60° */
+  @keyframes glowPulse{
+    0%{box-shadow:0 0 16px rgba(255,255,255,.45)}
+    50%{box-shadow:0 0 28px rgba(255,255,255,.85),0 0 60px rgba(255,255,255,.35)}
+    100%{box-shadow:0 0 16px rgba(255,255,255,.45)}
+  }
   .circle-container > li:nth-child(1){ transform: rotate(  0deg) translate(var(--rayon)) rotate(  0deg); }
   .circle-container > li:nth-child(2){ transform: rotate( 60deg) translate(var(--rayon)) rotate(-60deg); }
   .circle-container > li:nth-child(3){ transform: rotate(120deg) translate(var(--rayon)) rotate(-120deg); }
   .circle-container > li:nth-child(4){ transform: rotate(180deg) translate(var(--rayon)) rotate(-180deg); }
   .circle-container > li:nth-child(5){ transform: rotate(240deg) translate(var(--rayon)) rotate(-240deg); }
   .circle-container > li:nth-child(6){ transform: rotate(300deg) translate(var(--rayon)) rotate(-300deg); }
-  /* ====== Fenêtres centrées (au lieu de plein écran) ====== */
+  /* ===== Pages plein écran (overlay) ===== */
   .section {
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0; /* au lieu de inset: 0; */
-    z-index: 100;
+    position: fixed; inset: 0; z-index: 100;
     display: block;
     background: #111;
     color: #fff;
@@ -81,14 +72,13 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translateX(-50%) translateY(0);   /* slide-in vertical */
+    transform: translateY(0);
     transition: opacity .35s ease, transform .45s ease, visibility 0s;
   }
-  /* En-tête de fenêtre */
+  /* En-tête de page */
   .section-header{
     display:flex; gap:12px; align-items:center; justify-content:space-between;
-    position: sticky; top: 0;
-    padding: 8px 0 14px;
+    position: sticky; top: 0; padding: 8px 0 14px;
     background: linear-gradient(#111, rgba(17,17,17,0.6) 70%, transparent);
   }
   .section-title{
@@ -102,375 +92,370 @@
     background:#2e2e2e; border:1px solid #444;
   }
   .close-btn:hover{ background:#3a3a3a; }
-  /* Cartes / grilles de contenu */
-  .card-container{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top: 10px; }
+  /* Cartes */
+  .card-container{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:10px; }
   .card{
     border: 1px solid #ccc;
-    background:#2e2e2e;
-    border-radius:8px;
-    padding:16px;
-    width:calc(33% - 20px);
-    min-width:260px;
+    background:#2e2e2e; border-radius:8px; padding:16px;
+    width:calc(33% - 20px); min-width:260px;
     box-shadow:0 2px 5px rgba(0,0,0,.15);
     transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
   }
-  .card:hover{ transform: scale(1.05); box-shadow:0 6px 15px rgba(255,255,255,.3); cursor:pointer; }
-  .card h3{ margin:0 0 8px; font-size:1.2em; color:#9a2243; font-weight:700; }
+  .card:hover{ transform: scale(1.05); box-shadow:0 6px 15px rgba(255,255,255,.3); }
+  .card h3{ margin-top:0; color:#9a2243; }
   .card p{ margin:4px 0; }
-  .img-center{ display:block; margin:14px auto; width:min(900px, 100%); }
   /* Sous-titres (details/summary) – pas de puce + pleine largeur */
   details > summary{ list-style:none; cursor:pointer; }
   details > summary::-webkit-details-marker{ display:none; }
   details > summary::marker{ content:""; }
   .soustitre{
     display:block; width:100%; box-sizing:border-box;
-    text-align:center;
-    color:#fff; background:#b74162;
-    margin:12px 0 20px 0;
-    border:3px solid #fff; border-radius:12px;
+    text-align:center; color:#fff; background:#b74162;
+    margin:12px 0 20px 0; border:3px solid #fff; border-radius:12px;
     font-weight:700; font-size:20px; padding:10px;
   }
+  .img-center{ display:block; margin:14px auto; width:min(900px, 100%); }
   @media (max-width: 720px){
     :root{ --diametre: 380px; --rayon: 165px; --diametre-noeud: 100px; }
-    .section{ width: 94vw; top: 56px; padding:16px; max-height: 78vh; }
+    .section{ padding: 14px 16px 28px; }
+    .card{ width:100%; }
   }
   @media (prefers-reduced-motion: reduce){
-    .node{ transition:none; }
-    .section{ transition:none; transform: translateX(-50%); }
+    .node{ transition: none; }
+    .node:hover{ animation: none; }
+    .section{ transition: none; transform: none; }
   }
 </style>
 </head>
 <body>
-  <div class="app">
-    <!-- ===== Menu circulaire ===== -->
-    <ul class="circle-container">
-      <li><a class="node" href="#livraisons">Livraisons<br>&amp; paniers</a></li>
-      <li><a class="node" href="#chasse">Chasse<br>&amp; pêche</a></li>
-      <li><a class="node" href="#reglement">Règlement</a></li>
-      <li><a class="node" href="#avantages">Avantages</a></li>
-      <li><a class="node" href="#infos">Informations</a></li>
-      <li><a class="node" href="#commandes">Commandes<br>hebdomadaires</a></li>
-    </ul>
-    <!-- ===== Fenêtres (ouvertes via :target) ===== -->
-    <!-- 1) LIVRAISONS & PANIERS -->
-    <section id="livraisons" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn" aria-label="Fermer">✖ Fermer</a>
-        <h2 class="section-title">🚚 Livraisons &amp; paniers 🚚</h2>
-        <span style="width:78px;"></span>
+  <!-- ===== Menu circulaire ===== -->
+  <ul class="circle-container">
+    <li><a class="node" href="#livraisons">Livraisons<br>&amp; paniers</a></li>
+    <li><a class="node" href="#chasse">Chasse<br>&amp; pêche</a></li>
+    <li><a class="node" href="#reglement">Règlement</a></li>
+    <li><a class="node" href="#avantages">Avantages</a></li>
+    <li><a class="node" href="#infos">Informations</a></li>
+    <li><a class="node" href="#commandes">Commandes<br>hebdomadaires</a></li>
+  </ul>
+  <!-- ===== 1) LIVRAISONS & PANIERS ===== -->
+  <section id="livraisons" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn" aria-label="Fermer">✖ Fermer</a>
+      <h2 class="section-title">🚚 Livraisons &amp; paniers 🚚</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScuCB2qP5wTKL6rxJ04yZspgz_qDwkC_60aho-LSTJvjoeejw/viewform"
+      width="100%" height="750" style="border:0; display:block; margin:10px auto;"></iframe>
+  </section>
+  <!-- ===== 2) CHASSE & PÊCHE ===== -->
+  <section id="chasse" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn">✖ Fermer</a>
+      <h2 class="section-title">🔫 Chasse et Pêche 🔪</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <details>
+      <summary class="soustitre">🪙 Rachat de chasse/pêche 🪙</summary>
+      <div class="section-content">
+        <iframe src="https://docs.google.com/spreadsheets/d/1GdPU_p1CMXQoo9U3kOiWEC-oAyJ2PjpHSosdrsi7grU/edit?usp=sharing"
+          width="100%" height="700" frameborder="0" style="display:block; margin:0 auto;"></iframe>
       </div>
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScuCB2qP5wTKL6rxJ04yZspgz_qDwkC_60aho-LSTJvjoeejw/viewform"
-        width="100%" height="750" style="border:0; display:block; margin:10px auto;"></iframe>
-    </section>
-    <!-- 2) CHASSE & PÊCHE -->
-    <section id="chasse" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn">✖ Fermer</a>
-        <h2 class="section-title">🔫 Chasse et Pêche 🔪</h2>
-        <span style="width:78px;"></span>
-      </div>
-      <details>
-        <summary class="soustitre">🪙 Rachat de chasse/pêche 🪙</summary>
-        <div class="section-content">
-          <iframe src="https://docs.google.com/spreadsheets/d/1GdPU_p1CMXQoo9U3kOiWEC-oAyJ2PjpHSosdrsi7grU/edit?usp=sharing"
-            width="100%" height="700" frameborder="0" style="display:block; margin:0 auto;"></iframe>
+    </details>
+    <details>
+      <summary class="soustitre">Quotas et messages</summary>
+      <div class="card-container">
+        <div class="card">
+          <h3>Les quotas</h3>
+          <p>16 animaux maximum, à répartir entre :</p>
+          <p>🦌 6 biches/cerfs</p>
+          <p>🐇 8 lapins</p>
+          <p>🐺 4 coyotes</p>
+          <p>🐦 4 oiseaux (de chaque espèce)</p>
         </div>
-      </details>
-      <details>
-        <summary class="soustitre">Quotas et messages</summary>
+        <div class="card">
+          <h3>Message aux FDO : départ de chasse</h3>
+          <p>🦌 CM - Départ de chasse</p>
+          <p>Personne(s) : Mettre votre / les noms</p>
+          <p>Heure de départ :</p>
+          <p>Zone :</p>
+          <p>(Mettre position quand vous êtes sur zone)</p>
+        </div>
+        <div class="card">
+          <h3>Message aux FDO : retour de chasse</h3>
+          <p>🦌 CM - Retour de chasse</p>
+          <p>Personne(s) : Mettre votre / les noms</p>
+          <p>Heure de retour :</p>
+          <p>Quota fait :</p>
+          <p>Zone :</p>
+          <p>(Mettre position quand vous êtes sur zone)</p>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary class="soustitre">Zones et carte des zones</summary>
+      <div class="card-container">
+        <div class="card">
+          <h3>Zones actuelles</h3>
+          <p>4 - Alexandre SCHNEIDER</p>
+          <p>5 - Jeremy VALENTINE</p>
+          <p>Lien carte de chasse : https://i.ibb.co/WBcs531/image.png?quality=lossless</p>
+        </div>
+      </div>
+      <a href="https://i.ibb.co/WBcs531/image.png?quality=lossless" target="_blank">
+        <img src="https://i.ibb.co/WBcs531/image.png?quality=lossless" alt="Zones de chasse" class="img-center" />
+      </a>
+    </details>
+  </section>
+  <!-- ===== 3) RÈGLEMENT ===== -->
+  <section id="reglement" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn">✖ Fermer</a>
+      <h2 class="section-title">📜 Règlement 📜</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <h3>Les différents grades &amp; salaires sont les suivants :</h3>
+        <p>Apprentis : 250$</p>
+        <p>Employés : 400$</p>
+        <p>Employés Confirmés : 500$</p>
+        <p>Employé Qualifié : 600$</p>
+        <p>Adjoint : 750$</p>
+        <p>Patron : 800$</p>
+      </div>
+      <div class="card">
+        <h3>Primes exceptionnelles</h3>
+        <p>Versées tous les 14 jours sous réserve de la direction</p>
+      </div>
+      <div class="card">
+        <h3>Remboursements (véhicules, perf, custo &amp; rachat chasse)</h3>
+        <p>Versés tous les dimanches sous réserve de la direction</p>
+      </div>
+      <div class="card">
+        <h3>Cahier des charges des employés</h3>
+        <p>➢ Servir les clients (au château ou lors d'événements)</p>
+        <p>➢ Récolter les matières premières dans les vignes</p>
+        <p>➢ (Optionnel) Chasser &amp; pêcher</p>
+        <p>➢ Cuisiner les jus, plats et extras selon les besoins</p>
+        <p>➢ Livrer les commandes des clients</p>
+        <p>➢ Exporter les jus</p>
+        <p>➢ Récupérer et stocker les commandes en faveur du Château</p>
+      </div>
+      <div class="card">
+        <h3>Les outils et leurs utilisation</h3>
+        <p>➢ Mules : récolte, livraison, événements</p>
+        <p>➢ Sadler : Chasse, pêche, livraison, événements</p>
+        <p>➢ Taco Van : événements</p>
+        <p>➢ Tenue : obligatoire pour tout service</p>
+      </div>
+      <div class="card">
+        <h3>Garage entreprise</h3>
+        <p>➢ Tous les véhicules doivent être étiquettés avec le nom du propriétaire</p>
+        <p>➢ Tous les véhicules entreprises doivent être rangés avec le plein</p>
+      </div>
+      <div class="card">
+        <h3>Absences</h3>
+        <p>➢ Une absence de plus de 7 jours non annoncée à la direction peut mener à un licenciement pour abandon de poste</p>
+        <p>➢ Les prises de service visant uniquement à éviter un licenciement pour abandon de poste pourront mener à un licenciement</p>
+      </div>
+      <div class="card">
+        <h3>Sanctions 1</h3>
+        <p>➢ Les informations disponibles sur l'intranet et le panel sous soumises au secret professionnel et ne doivent pas être divulguées à de tierces personnes</p>
+      </div>
+      <div class="card">
+        <h3>Sanctions 2</h3>
+        <p>Liste non-exhaustive des choses pouvant mener à une sanction</p>
+        <p>➢ Amener des civils dans les locaux privés sans autorisation de la direction</p>
+        <p>➢ Voler tout produit</p>
+        <p>➢ Utiliser un véhicule entreprise en dehors du cadre professionnel</p>
+        <p>➢ Conduire un véhicule entreprise sans le permis adéquat</p>
+        <p>➢ Vendre des produits sans faire de facture</p>
+        <p>➢ Chasser sans permis ou avec un arme personnelle</p>
+        <p>➢ Réaliser toute activité illégale en service</p>
+        <p>➢ Divulguer des informations confidentielles</p>
+        <p>➢ Porter une arme visible, utiliser une arme</p>
+      </div>
+    </div>
+  </section>
+  <!-- ===== 4) AVANTAGES ===== -->
+  <section id="avantages" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn">✖ Fermer</a>
+      <h2 class="section-title">✅ Avantages ✅</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <p>Les avantages sont limités à 1 de chaque catégorie par mois hors exception décidée par la direction</p>
+        <p>Les demandes d'avantages doivent être faites par sms aux patrons dans un délai de 4 jours après l'achat</p>
+        <p>Les avantages sont disponibles uniquement à partir du grade d'employé</p>
+      </div>
+      <div class="card">
+        <h3>Achat de véhicule</h3>
+        <p>Plafond de 100'000 $</p>
+        <p>Sur information de la plaque &amp; preuve d'achat</p>
+      </div>
+      <div class="card">
+        <h3>Achat de logement</h3>
+        <p>Plafond de 100'000 $</p>
+        <p>Sur information de l'adresse</p>
+      </div>
+      <div class="card">
+        <h3>Customisation &amp; performances de véhicule</h3>
+        <p>Plafond de 100'000 $</p>
+        <p>Sur présentation de facture</p>
+      </div>
+      <div class="card">
+        <h3>Produits du Château</h3>
+        <p>Consommation gratuite pendant le service</p>
+        <p>20% de réduction sur toutes les commandes privées</p>
+      </div>
+      <div class="card">
+        <h3>Chasse</h3>
+        <p>Permis &amp; license 100% financés</p>
+        <p>Remboursement des munitions</p>
+        <p>Prix de rachat préférentiel</p>
+      </div>
+    </div>
+  </section>
+  <!-- ===== 5) INFORMATIONS ===== -->
+  <section id="infos" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn">✖ Fermer</a>
+      <h2 class="section-title">ℹ️ Informations ℹ️</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <details>
+      <summary class="soustitre">📰 Carte 📰</summary>
+      <div class="section-content">
         <div class="card-container">
           <div class="card">
-            <h3>Les quotas</h3>
-            <p>16 animaux maximum, à répartir entre :</p>
-            <p>🦌 6 biches/cerfs</p>
-            <p>🐇 8 lapins</p>
-            <p>🐺 4 coyotes</p>
-            <p>🐦 4 oiseaux (de chaque espèce)</p>
-          </div>
-          <div class="card">
-            <h3>Message aux FDO : départ de chasse</h3>
-            <p>🦌 CM - Départ de chasse</p>
-            <p>Personne(s) : Mettre votre / les noms</p>
-            <p>Heure de départ :</p>
-            <p>Zone :</p>
-            <p>(Mettre position quand vous êtes sur zone)</p>
-          </div>
-          <div class="card">
-            <h3>Message aux FDO : retour de chasse</h3>
-            <p>🦌 CM - Retour de chasse</p>
-            <p>Personne(s) : Mettre votre / les noms</p>
-            <p>Heure de retour :</p>
-            <p>Quota fait :</p>
-            <p>Zone :</p>
-            <p>(Mettre position quand vous êtes sur zone)</p>
+            <p>Merci de copier ce lien et de l'envoyer aux clients souhaitant la carte</p>
+            <p>https://i.postimg.cc/zfSTzdsC/MENU-CM.png</p>
           </div>
         </div>
-      </details>
-      <details>
-        <summary class="soustitre">Zones et carte des zones</summary>
-        <div class="card-container">
-          <div class="card">
-            <h3>Zones actuelles</h3>
-            <p>4 - Alexandre SCHNEIDER</p>
-            <p>5 - Jeremy VALENTINE</p>
-            <p>Lien carte de chasse : https://i.ibb.co/WBcs531/image.png?quality=lossless</p>
-          </div>
-        </div>
-        <a href="https://i.ibb.co/WBcs531/image.png?quality=lossless" target="_blank">
-          <img src="https://i.ibb.co/WBcs531/image.png?quality=lossless" alt="Zones de chasse" class="img-center" />
+        <a href="https://i.postimg.cc/zfSTzdsC/MENU-CM.png" target="_blank">
+          <img src="https://i.postimg.cc/zfSTzdsC/MENU-CM.png" alt="Menu CM" class="img-center" />
         </a>
-      </details>
-    </section>
-    <!-- 3) RÈGLEMENT -->
-    <section id="reglement" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn">✖ Fermer</a>
-        <h2 class="section-title">📜 Règlement 📜</h2>
-        <span style="width:78px;"></span>
       </div>
+    </details>
+    <details>
+      <summary class="soustitre">🧺 Paniers 🧺</summary>
       <div class="card-container">
         <div class="card">
-          <h3>Les différents grades &amp; salaires sont les suivants :</h3>
-          <p>Apprentis : 250$</p>
-          <p>Employés : 400$</p>
-          <p>Employés Confirmés : 500$</p>
-          <p>Employé Qualifié : 600$</p>
-          <p>Adjoint : 750$</p>
-          <p>Patron : 800$</p>
-        </div>
-        <div class="card">
-          <h3>Primes exceptionnelles</h3>
-          <p>Versées tous les 14 jours sous réserve de la direction</p>
-        </div>
-        <div class="card">
-          <h3>Remboursements (véhicules, perf, custo &amp; rachat chasse)</h3>
-          <p>Versés tous les dimanches sous réserve de la direction</p>
-        </div>
-        <div class="card">
-          <h3>Cahier des charges des employés</h3>
-          <p>➢ Servir les clients (au château ou lors d'événements)</p>
-          <p>➢ Récolter les matières premières dans les vignes</p>
-          <p>➢ (Optionnel) Chasser &amp; pêcher</p>
-          <p>➢ Cuisiner les jus, plats et extras selon les besoins</p>
-          <p>➢ Livrer les commandes des clients</p>
-          <p>➢ Exporter les jus</p>
-          <p>➢ Récupérer et stocker les commandes en faveur du Château</p>
-        </div>
-        <div class="card">
-          <h3>Les outils et leurs utilisation</h3>
-          <p>➢ Mules : récolte, livraison, événements</p>
-          <p>➢ Sadler : Chasse, pêche, livraison, événements</p>
-          <p>➢ Taco Van : événements</p>
-          <p>➢ Tenue : obligatoire pour tout service</p>
-        </div>
-        <div class="card">
-          <h3>Garage entreprise</h3>
-          <p>➢ Tous les véhicules doivent être étiquettés avec le nom du propriétaire</p>
-          <p>➢ Tous les véhicules entreprises doivent être rangés avec le plein</p>
-        </div>
-        <div class="card">
-          <h3>Absences</h3>
-          <p>➢ Une absence de plus de 7 jours non annoncée à la direction peut mener à un licenciement pour abandon de poste</p>
-          <p>➢ Les prises de service visant uniquement à éviter un licenciement pour abandon de poste pourront mener à un licenciement</p>
-        </div>
-        <div class="card">
-          <h3>Sanctions 1</h3>
-          <p>➢ Les informations disponibles sur l'intranet et le panel sous soumises au secret professionnel et ne doivent pas être divulguées à de tierces personnes</p>
-        </div>
-        <div class="card">
-          <h3>Sanctions 2</h3>
-          <p>Liste non-exhaustive des choses pouvant mener à une sanction</p>
-          <p>➢ Amener des civils dans les locaux privés sans autorisation de la direction</p>
-          <p>➢ Voler tout produit</p>
-          <p>➢ Utiliser un véhicule entreprise en dehors du cadre professionnel</p>
-          <p>➢ Conduire un véhicule entreprise sans le permis adéquat</p>
-          <p>➢ Vendre des produits sans faire de facture</p>
-          <p>➢ Chasser sans permis ou avec un arme personnelle</p>
-          <p>➢ Réaliser toute activité illégale en service</p>
-          <p>➢ Divulguer des informations confidentielles</p>
-          <p>➢ Porter une arme visible, utiliser une arme</p>
+          <h3>Service public -- Prendre un panier SP dans le placard sous l'escalier de la tour</h3>
+          <p>➢ 14 jus (7+7 différent)</p>
+          <p>➢ 8 plats (2 viandes / 4 végé / 2 poissons)</p>
+          <p>➢ 2 desserts (1 cheesecake &amp; 1 salade de fruit)</p>
         </div>
       </div>
-    </section>
-    <!-- 4) AVANTAGES -->
-    <section id="avantages" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn">✖ Fermer</a>
-        <h2 class="section-title">✅ Avantages ✅</h2>
-        <span style="width:78px;"></span>
-      </div>
-      <div class="card-container">
-        <div class="card">
-          <p>Les avantages sont limités à 1 de chaque catégorie par mois hors exception décidée par la direction</p>
-          <p>Les demandes d'avantages doivent être faites par sms aux patrons dans un délai de 4 jours après l'achat</p>
-          <p>Les avantages sont disponibles uniquement à partir du grade d'employé</p>
-        </div>
-        <div class="card">
-          <h3>Achat de véhicule</h3>
-          <p>Plafond de 100'000 $</p>
-          <p>Sur information de la plaque &amp; preuve d'achat</p>
-        </div>
-        <div class="card">
-          <h3>Achat de logement</h3>
-          <p>Plafond de 100'000 $</p>
-          <p>Sur information de l'adresse</p>
-        </div>
-        <div class="card">
-          <h3>Customisation &amp; performances de véhicule</h3>
-          <p>Plafond de 100'000 $</p>
-          <p>Sur présentation de facture</p>
-        </div>
-        <div class="card">
-          <h3>Produits du Château</h3>
-          <p>Consommation gratuite pendant le service</p>
-          <p>20% de réduction sur toutes les commandes privées</p>
-        </div>
-        <div class="card">
-          <h3>Chasse</h3>
-          <p>Permis &amp; license 100% financés</p>
-          <p>Remboursement des munitions</p>
-          <p>Prix de rachat préférentiel</p>
-        </div>
-      </div>
-    </section>
-    <!-- 5) INFORMATIONS -->
-    <section id="infos" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn">✖ Fermer</a>
-        <h2 class="section-title">ℹ️ Informations ℹ️</h2>
-        <span style="width:78px;"></span>
-      </div>
-      <details>
-        <summary class="soustitre">📰 Carte 📰</summary>
-        <div class="section-content">
-          <div class="card-container">
-            <div class="card">
-              <p>Merci de copier ce lien et de l'envoyer aux clients souhaitant la carte</p>
-              <p>https://i.postimg.cc/zfSTzdsC/MENU-CM.png</p>
-            </div>
+    </details>
+    <details>
+      <summary class="soustitre">Une journée classique</summary>
+      <div class="section-content">
+        <div class="card-container">
+          <div class="card"><h3>1.</h3><p>Je prends mon service, me change et met à jour mon dispatch</p></div>
+          <div class="card"><h3>2.</h3><p>Je prépare les commandes hebdomadaires nécessaires et note sur le dispatch lorsqu'elles sont prêtes</p></div>
+          <div class="card"><h3>3.</h3><p>Si elle est présente, je demande à la direction s'il y a de la cuisine à faire</p></div>
+          <div class="card">
+            <h3>4.</h3>
+            <p>Je vérifie les stocks de raisin du frigo, dès lors, 2 options :</p>
+            <p>a : il y a beaucoup de raisin : je vérifie s'il y a assez de vin (environ 60), si oui, je fais des jus</p>
+            <p>b : il n'y pas beaucoup de raisin : je vérifie les stocks de jus et vais récolter le raisin nécessaire</p>
           </div>
-          <a href="https://i.postimg.cc/zfSTzdsC/MENU-CM.png" target="_blank">
-            <img src="https://i.postimg.cc/zfSTzdsC/MENU-CM.png" alt="Menu CM" class="img-center" />
-          </a>
         </div>
-      </details>
-      <details>
-        <summary class="soustitre">🧺 Paniers 🧺</summary>
+      </div>
+    </details>
+    <details>
+      <summary class="soustitre">Faire une facture</summary>
+      <div class="section-content">
         <div class="card-container">
           <div class="card">
-            <h3>Service public -- Prendre un panier SP dans le placard sous l'escalier de la tour</h3>
-            <p>➢ 14 jus (7+7 différent)</p>
-            <p>➢ 8 plats (2 viandes / 4 végé / 2 poissons)</p>
-            <p>➢ 2 desserts (1 cheesecake &amp; 1 salade de fruit)</p>
+            <h3>Libellé</h3>
+            <p>Il doit apparaître ce qui est vendu</p>
           </div>
-        </div>
-      </details>
-      <details>
-        <summary class="soustitre">Une journée classique</summary>
-        <div class="section-content">
-          <div class="card-container">
-            <div class="card"><h3>1.</h3><p>Je prends mon service, me change et met à jour mon dispatch</p></div>
-            <div class="card"><h3>2.</h3><p>Je prépare les commandes hebdomadaires nécessaires et note sur le dispatch lorsqu'elles sont prêtes</p></div>
-            <div class="card"><h3>3.</h3><p>Si elle est présente, je demande à la direction s'il y a de la cuisine à faire</p></div>
-            <div class="card">
-              <h3>4.</h3>
-              <p>Je vérifie les stocks de raisin du frigo, dès lors, 2 options :</p>
-              <p>a : il y a beaucoup de raisin : je vérifie s'il y a assez de vin (environ 60), si oui, je fais des jus</p>
-              <p>b : il n'y pas beaucoup de raisin : je vérifie les stocks de jus et vais récolter le raisin nécessaire</p>
-            </div>
+          <div class="card">
+            <h3>Exemples</h3>
+            <p>Un client commande 30 multifruits, 15 grands plats et 2 cheesecake : 30 GJ + 15 GP + 2 GE</p>
+            <p>Un client commande un menu March'Al et travaille à UPW : Menu March'Al -20% UPW</p>
+            <p>Un client commande un menu Tsuki et travaille à TN : Menu tsuki réduc TN</p>
+            <p>Un client commande un menu Castle Marius et travaille à NG : Menu Castle Marius NG</p>
           </div>
-        </div>
-      </details>
-      <details>
-        <summary class="soustitre">Faire une facture</summary>
-        <div class="section-content">
-          <div class="card-container">
-            <div class="card">
-              <h3>Libellé</h3>
-              <p>Il doit apparaître ce qui est vendu</p>
-            </div>
-            <div class="card">
-              <h3>Exemples</h3>
-              <p>Un client commande 30 multifruits, 15 grands plats et 2 cheesecake : 30 GJ + 15 GP + 2 GE</p>
-              <p>Un client commande un menu March'Al et travaille à UPW : Menu March'Al -20% UPW</p>
-              <p>Un client commande un menu Tsuki et travaille à TN : Menu tsuki réduc TN</p>
-              <p>Un client commande un menu Castle Marius et travaille à NG : Menu Castle Marius NG</p>
-            </div>
-          </div>
-        </div>
-      </details>
-      <details>
-        <summary class="soustitre">📅 Calendrier de production 📅</summary>
-        <div class="section-content">
-          <div class="card-container">
-            <div class="card"><h3>Raisins</h3><p>On récolte tous les raisins tous les jours et on stock.</p><p>Garder 50 grappes de chaque minimum</p></div>
-            <div class="card"><h3>Jus</h3><p>On fait des jus chaque jour selon l'approvisionnement de raisin</p></div>
-            <div class="card"><h3>Fromages</h3><p>On en fait 60 d'une sorte quand il en reste une dizaine</p></div>
-            <div class="card"><h3>Vins</h3><p>On en fait environ 60 quand les stocks sont faibles (~10)</p></div>
-            <div class="card"><h3>Fruits For Sub</h3><p>Quand il en reste 100 on en refait 1000</p></div>
-            <div class="card"><h3>Multifruits</h3><p>Quand il en reste 500 on en refait 1000</p></div>
-            <div class="card"><h3>Paniers repas des services publics</h3><p>On en refait quand les stocks sont faibles ~10 On remonte à environ 30</p></div>
-          </div>
-        </div>
-      </details>
-      <details>
-        <summary class="soustitre">🗺️ Le vignoble 🗺️</summary>
-        <div class="section-content">
-          <a href="https://i.ibb.co/XfSdtBmr/Chasselas-1.png" target="_blank">
-            <img src="https://i.ibb.co/XfSdtBmr/Chasselas-1.png" alt="Carte 1" class="img-center" />
-          </a>
-        </div>
-      </details>
-      <details>
-        <summary class="soustitre">💡 Protocole Blackout 💡</summary>
-        <div class="section-content">
-          <div class="card-container">
-            <div class="card">
-              <p>Dès qu'un blackout est constaté, tous les véhicules doivent être rangés dans le garage puis tout le monde doit aller au point de ralliement (BCSO, LSMC ou LSPD) avec un véhicule).</p>
-            </div>
-          </div>
-        </div>
-      </details>
-    </section>
-    <!-- 6) COMMANDES HEBDOMADAIRES -->
-    <section id="commandes" class="section">
-      <div class="section-header">
-        <a href="#!" class="close-btn">✖ Fermer</a>
-        <h2 class="section-title">📋 Commandes hebdomadaires 📋</h2>
-        <span style="width:78px;"></span>
-      </div>
-      <div class="card-container">
-        <div class="card">
-          <h3>Lundi</h3>
-          <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
-          <p><span style="color: purple; text-decoration: underline;">BlackSwann (12'750 $)</span> 225 grands plats + 300 multifruits</p>
-        </div>
-        <div class="card">
-          <h3>Mardi</h3>
-          <p><span style="color: green; text-decoration: underline;">88ers (9'000 $)</span> 200 grands plats + 300 moyens jus</p>
-          <p><span style="color: blue; text-decoration: underline;">Kintsugi (9'000 $)</span> 450 moyens jus + 150 grands plats</p>
-        </div>
-        <div class="card">
-          <h3>Mercredi</h3>
-          <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
-          <p><span style="color: gray; text-decoration: underline;">Obsidian (facture patrons)</span> 400 moyens jus + 200 grands plats</p>
-        </div>
-        <div class="card">
-          <h3>Vendredi</h3>
-          <p><span style="color: purple; text-decoration: underline;">BlackSwann (12'750 $)</span> 225 grands plats + 300 multifruits</p>
-          <p><span style="color: green; text-decoration: underline;">88ers (9'000 $)</span> 200 grands plats + 300 moyens jus</p>
-          <p><span style="color: blue; text-decoration: underline;">Kintsugi (9'000 $)</span> 450 moyens jus + 150 grands plats</p>
-        </div>
-        <div class="card">
-          <h3>Samedi</h3>
-          <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
-        </div>
-        <div class="card">
-          <h3>Dimanche</h3>
-          <p><span style="color: gray; text-decoration: underline;">Obsidian (facture patrons)</span> 400 moyens jus + 200 grands plats</p>
         </div>
       </div>
-    </section>
-  </div>
+    </details>
+    <details>
+      <summary class="soustitre">📅 Calendrier de production 📅</summary>
+      <div class="section-content">
+        <div class="card-container">
+          <div class="card"><h3>Raisins</h3><p>On récolte tous les raisins tous les jours et on stock.</p><p>Garder 50 grappes de chaque minimum</p></div>
+          <div class="card"><h3>Jus</h3><p>On fait des jus chaque jour selon l'approvisionnement de raisin</p></div>
+          <div class="card"><h3>Fromages</h3><p>On en fait 60 d'une sorte quand il en reste une dizaine</p></div>
+          <div class="card"><h3>Vins</h3><p>On en fait environ 60 quand les stocks sont faibles (~10)</p></div>
+          <div class="card"><h3>Fruits For Sub</h3><p>Quand il en reste 100 on en refait 1000</p></div>
+          <div class="card"><h3>Multifruits</h3><p>Quand il en reste 500 on en refait 1000</p></div>
+          <div class="card"><h3>Paniers repas des services publics</h3><p>On en refait quand les stocks sont faibles ~10 On remonte à environ 30</p></div>
+        </div>
+      </div>
+    </details>
+    <details>
+      <summary class="soustitre">🗺️ Le vignoble 🗺️</summary>
+      <div class="section-content">
+        <a href="https://i.ibb.co/XfSdtBmr/Chasselas-1.png" target="_blank">
+          <img src="https://i.ibb.co/XfSdtBmr/Chasselas-1.png" alt="Carte 1" class="img-center" />
+        </a>
+      </div>
+    </details>
+    <details>
+      <summary class="soustitre">💡 Protocole Blackout 💡</summary>
+      <div class="section-content">
+        <div class="card-container">
+          <div class="card">
+            <p>Dès qu'un blackout est constaté, tous les véhicules doivent être rangés dans le garage puis tout le monde doit aller au point de ralliement (BCSO, LSMC ou LSPD) avec un véhicule.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+  <!-- ===== 6) COMMANDES HEBDOMADAIRES ===== -->
+  <section id="commandes" class="section">
+    <div class="section-header">
+      <a href="#!" class="close-btn">✖ Fermer</a>
+      <h2 class="section-title">📋 Commandes hebdomadaires 📋</h2>
+      <span style="width:78px;"></span>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <h3>Lundi</h3>
+        <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
+        <p><span style="color: purple; text-decoration: underline;">BlackSwann (12'750 $)</span> 225 grands plats + 300 multifruits</p>
+      </div>
+      <div class="card">
+        <h3>Mardi</h3>
+        <p><span style="color: green; text-decoration: underline;">88ers (9'000 $)</span> 200 grands plats + 300 moyens jus</p>
+        <p><span style="color: blue; text-decoration: underline;">Kintsugi (9'000 $)</span> 450 moyens jus + 150 grands plats</p>
+      </div>
+      <div class="card">
+        <h3>Mercredi</h3>
+        <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
+        <p><span style="color: gray; text-decoration: underline;">Obsidian (facture patrons)</span> 400 moyens jus + 200 grands plats</p>
+      </div>
+      <div class="card">
+        <h3>Vendredi</h3>
+        <p><span style="color: purple; text-decoration: underline;">BlackSwann (12'750 $)</span> 225 grands plats + 300 multifruits</p>
+        <p><span style="color: green; text-decoration: underline;">88ers (9'000 $)</span> 200 grands plats + 300 moyens jus</p>
+        <p><span style="color: blue; text-decoration: underline;">Kintsugi (9'000 $)</span> 450 moyens jus + 150 grands plats</p>
+      </div>
+      <div class="card">
+        <h3>Samedi</h3>
+        <p><span style="color: red; text-decoration: underline;">Mirage (11'000 $) :</span> 200 grands plats + 200 multifruits + 100 moyens jus</p>
+      </div>
+      <div class="card">
+        <h3>Dimanche</h3>
+        <p><span style="color: gray; text-decoration: underline;">Obsidian (facture patrons)</span> 400 moyens jus + 200 grands plats</p>
+      </div>
+    </div>
+  </section>
 </body>
 </html>
