@@ -61,24 +61,20 @@
   .circle-container > li:nth-child(5){ transform: rotate(240deg) translate(var(--rayon)) rotate(-240deg); }
   .circle-container > li:nth-child(6){ transform: rotate(300deg) translate(var(--rayon)) rotate(-300deg); }
   /* ====== Fenêtres centrées (au lieu de plein écran) ====== */
-  .section{
-    position: fixed;           /* relative à .app */
-    left: 100%;
-    top: 72px;                    /* espace sous le menu */
-    transform: translateX(-50%) translateY(8%);  /* centrage + décalage pour slide */
+  .section {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0; /* au lieu de inset: 0; */
     z-index: 100;
-    width: min(1100px, 92vw);     /* largeur fluide */
-    max-height: 80vh;             /* hauteur max de la fenêtre */
-    background:#111;
-    color:#fff;
-    overflow: auto;               /* scroll interne si contenu long */
-    padding: 20px 24px 28px;
-    border-radius: 14px;
-    box-shadow: 0 14px 40px rgba(0,0,0,.55);
+    display: block;
+    background: #111;
+    color: #fff;
+    overflow: auto;
+    padding: 20px 40px 40px;
     /* état fermé (invisible et non cliquable) */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    transform: translateY(8%);
     transition: opacity .35s ease, transform .45s ease, visibility 0s linear .45s;
   }
   .section:target{
